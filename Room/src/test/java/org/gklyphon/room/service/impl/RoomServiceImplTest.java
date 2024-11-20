@@ -1,6 +1,8 @@
 package org.gklyphon.room.service.impl;
 
 import org.gklyphon.room.Data;
+import org.gklyphon.room.mapper.IRoomMapper;
+import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,6 +29,9 @@ class RoomServiceImplTest {
 
     @Mock
     IRoomRepository repository;
+
+    @Mock
+    IRoomMapper mapper;
 
     @InjectMocks
     RoomServiceImpl service;
@@ -118,9 +122,20 @@ class RoomServiceImplTest {
 
     @Test
     void save() {
+        when(mapper.toRoom(any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
+        when(repository.save(any(Room.class))).thenReturn(Data.ROOM);
+        Room room = service.save(Data.ROOM_REGISTER_DTO);
+        assertEquals(101L, room.getRoomNumber());
+        verify(repository).save(any(Room.class));
+        verify(mapper).toRoom(any(RoomRegisterDTO.class));
     }
 
     @Test
     void update() {
+        when(repository.findById(anyLong())).thenReturn(Optional.of(Data.ROOM));
+        when(repository.save(any(Room.class))).thenReturn(Data.ROOM);
+        Room room = service.update(1L, Data.ROOM_REGISTER_DTO);
+        assertEquals(101L, room.getRoomNumber());
+        verify(repository).save(any(Room.class));
     }
 }

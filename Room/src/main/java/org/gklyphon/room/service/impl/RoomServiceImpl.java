@@ -1,6 +1,7 @@
 package org.gklyphon.room.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
@@ -8,6 +9,8 @@ import org.gklyphon.room.model.entities.enums.RoomType;
 import org.gklyphon.room.repository.IRoomRepository;
 import org.gklyphon.room.service.IRoomService;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,7 @@ import java.math.BigDecimal;
 public class RoomServiceImpl implements IRoomService {
 
     private final IRoomRepository repository;
+    private final IRoomMapper mapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -86,12 +90,24 @@ public class RoomServiceImpl implements IRoomService {
     @Override
     @Transactional
     public Room save(RoomRegisterDTO roomRegisterDTO) {
-        return null;
+        try {
+            return repository.save(mapper.toRoom(roomRegisterDTO));
+        } catch (Exception e) {
+            throw new ServiceException("Unexpected error while saving room", e);
+        }
     }
 
     @Override
     @Transactional
     public Room update(Long id, RoomRegisterDTO roomRegisterDTO) {
-        return null;
+        try {
+            Room originalRoom = findById(id);
+            BeanUtils.copyProperties(roomRegisterDTO, originalRoom);
+            return repository.save(originalRoom);
+        } catch (DataIntegrityViolationException e) {
+            throw new ServiceException("Error updating room. Possible data integrity issue", e);
+        } catch (Exception e) {
+            throw new ServiceException("Unexpected error while updating room", e);
+        }
     }
 }
