@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "rooms")
-public class Room extends Auditable{
+public class Room extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +38,17 @@ public class Room extends Auditable{
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomImage> roomImages;
 
+    @ManyToMany
+    @JoinTable(
+            name = "room_additional_features",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_feature_id")
+    )
+    private List<RoomFeature> roomFeatures;
+
     public Room() {
         this.roomImages = new ArrayList<>();
+        this.roomFeatures = new ArrayList<>();
     }
 
     public void addRoomImage(RoomImage roomImage) {
@@ -49,4 +58,14 @@ public class Room extends Auditable{
     public void removeRoomImage(RoomImage roomImage) {
         roomImages.remove(roomImage);
     }
+
+    public void addAdditionalService(RoomFeature roomFeature) {
+        roomFeatures.add(roomFeature);
+    }
+
+    public void removeAdditionalService(RoomFeature roomFeature) {
+        roomFeatures.remove(roomFeature);
+    }
+
+
 }
