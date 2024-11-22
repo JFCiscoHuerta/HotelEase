@@ -58,13 +58,13 @@ class RoomServiceImplTest {
     }
 
     @Test
-    void findByPriceByNightLowerThan() {
-        when(repository.findByPriceByNightLowerThan(any(BigDecimal.class), any(Pageable.class)))
+    void findByPriceByNightLessThan() {
+        when(repository.findByPriceByNightLessThan(any(BigDecimal.class), any(Pageable.class)))
                 .thenReturn(Data.PAGE_ROOMS);
-        Page<Room> roomsPage = service.findByPriceByNightLowerThan(new BigDecimal("123"), mock(Pageable.class));
+        Page<Room> roomsPage = service.findByPriceByNightLessThan(new BigDecimal("123"), mock(Pageable.class));
         assertThat(roomsPage.getContent()).hasSize(1);
         assertThat(roomsPage.getContent().getFirst().getRoomState()).isEqualTo(RoomState.AVAILABLE);
-        verify(repository).findByPriceByNightLowerThan(any(BigDecimal.class), any(Pageable.class));
+        verify(repository).findByPriceByNightLessThan(any(BigDecimal.class), any(Pageable.class));
     }
 
     @Test

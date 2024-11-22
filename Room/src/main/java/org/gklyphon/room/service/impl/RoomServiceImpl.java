@@ -40,8 +40,8 @@ public class RoomServiceImpl implements IRoomService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Room> findByPriceByNightLowerThan(BigDecimal priceByNight, Pageable pageable) {
-        return repository.findByPriceByNightLowerThan(priceByNight, pageable);
+    public Page<Room> findByPriceByNightLessThan(BigDecimal priceByNight, Pageable pageable) {
+        return repository.findByPriceByNightLessThan(priceByNight, pageable);
     }
 
     @Override
