@@ -64,6 +64,12 @@ public class RoomController {
         return ResponseEntity.ok(room);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
+        roomService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     private static ResponseEntity<Object> handleBindingResult(BindingResult result) {
         if (result.hasErrors()) {
             List<String> errorList = result.getFieldErrors()
@@ -98,13 +104,13 @@ public class RoomController {
         return ResponseEntity.ok(pagedModel);
     }
 
-    @GetMapping("/price-by-night-lower-than")
-    public ResponseEntity<?> getByPriceByNighLowerThan(
+    @GetMapping("/price-by-night-less-than")
+    public ResponseEntity<?> getByPriceByNightLessThan(
             @RequestParam(name = "price-by-night") BigDecimal priceByNight,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByPriceByNightLowerThan(priceByNight, pageable);
+        Page<Room> roomPage = roomService.findByPriceByNightLessThan(priceByNight, pageable);
         PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
         return ResponseEntity.ok(pagedModel);
     }
