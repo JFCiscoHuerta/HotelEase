@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 public interface IRoomService extends IService<Room> {
     Page<Room> findByPriceByNightGreaterThan(BigDecimal priceByNight, Pageable pageable);
-    Page<Room> findByPriceByNightLowerThan(BigDecimal priceByNight, Pageable pageable);
+    Page<Room> findByPriceByNightLessThan(BigDecimal priceByNight, Pageable pageable);
     Page<Room> findByPriceByNightBetween(BigDecimal min, BigDecimal max, Pageable pageable);
     Page<Room> findByRoomType(RoomType roomType, Pageable pageable);
     Page<Room> findByRoomState(RoomState roomState, Pageable pageable);
