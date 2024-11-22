@@ -1,9 +1,6 @@
 package org.gklyphon.room.model.dtos;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -28,7 +25,10 @@ public class RoomRegisterDTO {
     @NotBlank
     private String roomState;
 
-    @NotBlank
+    @NotEmpty
     @Size(min = 1)
     private List<RoomImageRegisterDTO> roomImages;
+
+    @NotEmpty
+    private List<RoomFeatureRegisterDTO> roomFeatures;
 }
