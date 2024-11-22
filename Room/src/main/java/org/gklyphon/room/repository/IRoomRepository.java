@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public interface IRoomRepository extends JpaRepository<Room, Long> {
 
     Page<Room> findByPriceByNightGreaterThan(BigDecimal priceByNight, Pageable pageable);
-    Page<Room> findByPriceByNightLowerThan(BigDecimal priceByNight, Pageable pageable);
+    Page<Room> findByPriceByNightLessThan(BigDecimal priceByNight, Pageable pageable);
     Page<Room> findByPriceByNightBetween(BigDecimal min, BigDecimal max, Pageable pageable);
 
     Page<Room> findByRoomType(RoomType roomType, Pageable pageable);
