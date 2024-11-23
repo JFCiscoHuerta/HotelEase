@@ -63,7 +63,7 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
     public RoomFeature update(Long id, RoomFeatureRegisterDTO roomFeatureRegisterDTO) {
         try {
             RoomFeature originalRoomFeature = findById(id);
-            BeanUtils.copyProperties(roomFeatureRegisterDTO, roomFeatureRegisterDTO);
+            BeanUtils.copyProperties(roomFeatureRegisterDTO, originalRoomFeature);
             return featureRepository.save(originalRoomFeature);
         } catch (ElementNotFoundException e) {
             throw e;
