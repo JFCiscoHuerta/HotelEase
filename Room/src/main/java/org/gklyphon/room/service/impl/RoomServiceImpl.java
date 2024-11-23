@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -125,6 +126,7 @@ public class RoomServiceImpl implements IRoomService {
             handleRoomFeatures(roomRegisterDTO, originalRoom);
             List<RoomImage> roomImages = handleRoomImages(roomRegisterDTO, originalRoom);
 
+            originalRoom.setRoomImages(new ArrayList<>(originalRoom.getRoomImages()));
             originalRoom.getRoomImages().clear();
             originalRoom.getRoomImages().addAll(roomImages);
 
