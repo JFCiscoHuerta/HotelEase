@@ -27,5 +27,5 @@ public class RoomRegisterDTO {
 
     private List<RoomImageRegisterDTO> roomImages;
 
-    private List<RoomFeatureRegisterDTO> roomFeatures;
+    private List<Long> roomFeatureIds;
 }
