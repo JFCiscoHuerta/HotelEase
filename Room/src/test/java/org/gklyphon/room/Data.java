@@ -56,25 +56,35 @@ public class Data {
                     List.of(
                             RoomImageRegisterDTO.builder()
                                     .path("/path")
-                                    .roomId(1L)
                                     .build()
                     )
             )
-            .roomFeatures(
-                    List.of(
-                            RoomFeatureRegisterDTO.builder()
-                                    .serviceName("TV")
-                                    .servicePrice(new BigDecimal("5.00"))
-                                    .build(),
-                            RoomFeatureRegisterDTO.builder()
-                                    .serviceName("XBOX")
-                                    .servicePrice(new BigDecimal("3.00"))
-                                    .build()
-                    )
-            )
+            .roomFeatureIds(List.of(1L))
             .build();
 
     public static final List<Room> ROOMS = List.of(ROOM);
 
     public static final Page<Room> PAGE_ROOMS = new PageImpl<Room>(ROOMS);
+
+    public static final List<RoomFeature> ROOM_FEATURES = List.of(
+            RoomFeature.builder()
+                    .id(1L)
+                    .serviceName("Wifi")
+                    .servicePrice(new BigDecimal("12"))
+                    .build()
+    );
+
+    public static final List<RoomImage> ROOM_IMAGES = List.of(
+            RoomImage.builder()
+                    .id(1L)
+                    .room(new Room())
+                    .path("")
+                    .build()
+    );
+
+    public static final List<RoomImageRegisterDTO> ROOM_IMAGES_REGISTER_DTO = List.of(
+            RoomImageRegisterDTO.builder()
+                    .path("")
+                    .build()
+    );
 }
