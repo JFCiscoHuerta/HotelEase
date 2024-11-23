@@ -6,6 +6,7 @@ import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
+import org.gklyphon.room.repository.IRoomFeatureRepository;
 import org.gklyphon.room.repository.IRoomRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,9 @@ class RoomServiceImplTest {
 
     @Mock
     IRoomRepository repository;
+
+    @Mock
+    IRoomFeatureRepository featureRepository;
 
     @Mock
     IRoomMapper mapper;
@@ -124,6 +128,7 @@ class RoomServiceImplTest {
     @Test
     void save() {
         when(mapper.toRoom(any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
+        when(featureRepository.findAllById(any())).thenReturn(Data.ROOM_FEATURES);
         when(repository.save(any(Room.class))).thenReturn(Data.ROOM);
         Room room = service.save(Data.ROOM_REGISTER_DTO);
         assertEquals(101L, room.getRoomNumber());
@@ -134,9 +139,18 @@ class RoomServiceImplTest {
     @Test
     void update() {
         when(repository.findById(anyLong())).thenReturn(Optional.of(Data.ROOM));
+        when(mapper.toRoom(any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
+        when(featureRepository.findAllById(any())).thenReturn(Data.ROOM_FEATURES);
+        when(mapper.toRoomImages(any())).thenReturn(Data.ROOM_IMAGES);
         when(repository.save(any(Room.class))).thenReturn(Data.ROOM);
+
         Room room = service.update(1L, Data.ROOM_REGISTER_DTO);
         assertEquals(101L, room.getRoomNumber());
+
+        verify(mapper).toRoom(any(RoomRegisterDTO.class));
+        verify(mapper).toRoomImages(any());
+        verify(featureRepository).findAllById(any());
         verify(repository).save(any(Room.class));
     }
+
 }
