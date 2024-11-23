@@ -20,6 +20,7 @@ public class RoomImage extends Auditable {
     @NotBlank
     private String path;
 
+    @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 }
