@@ -42,7 +42,8 @@ public class Room extends Auditable {
     @JoinTable(
             name = "room_additional_features",
             joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "room_feature_id")
+            inverseJoinColumns = @JoinColumn(name = "room_feature_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"room_id","room_feature_id"})
     )
     private List<RoomFeature> roomFeatures;
 
