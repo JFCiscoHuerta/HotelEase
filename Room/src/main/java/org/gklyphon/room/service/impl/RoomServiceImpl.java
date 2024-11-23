@@ -1,6 +1,7 @@
 package org.gklyphon.room.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gklyphon.room.exception.custom.ElementNotFoundException;
 import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
@@ -68,7 +69,7 @@ public class RoomServiceImpl implements IRoomService {
         try {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("");
+            throw new ElementNotFoundException("Room with id:" + id + " not found.");
         } catch (Exception e) {
             throw new ServiceException("Unexpected error while deleting the room", e);
         }
@@ -84,7 +85,7 @@ public class RoomServiceImpl implements IRoomService {
     @Transactional(readOnly = true)
     public Room findById(Long id) {
         return repository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ElementNotFoundException("Room with id: " + id + " not found."));
     }
 
     @Override

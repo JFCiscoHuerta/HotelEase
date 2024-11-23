@@ -47,9 +47,7 @@ public class RoomController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createRoom(
-            @Valid @RequestBody RoomRegisterDTO roomRegisterDTO, BindingResult result) {
-        ResponseEntity<?> build = handleBindingResult(result);
-        if (build != null) return build;
+            @Valid @RequestBody RoomRegisterDTO roomRegisterDTO) {
         Room room = roomService.save(roomRegisterDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(room);
     }
@@ -57,9 +55,7 @@ public class RoomController {
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateRoom(
             @PathVariable Long id,
-            @Valid @RequestBody RoomRegisterDTO roomRegisterDTO, BindingResult result) {
-        ResponseEntity<?> build = handleBindingResult(result);
-        if (build != null) return build;
+            @Valid @RequestBody RoomRegisterDTO roomRegisterDTO) {
         Room room = roomService.update(id, roomRegisterDTO);
         return ResponseEntity.ok(room);
     }
@@ -68,17 +64,6 @@ public class RoomController {
     public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
         roomService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private static ResponseEntity<Object> handleBindingResult(BindingResult result) {
-        if (result.hasErrors()) {
-            List<String> errorList = result.getFieldErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            return ResponseEntity.badRequest().build();
-        }
-        return null;
     }
 
     @GetMapping("/price-by-night-between")
