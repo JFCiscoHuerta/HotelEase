@@ -100,6 +100,7 @@ class RoomServiceImplTest {
     @Test
     void delete() {
         doNothing().when(repository).deleteById(anyLong());
+        when(repository.findById(anyLong())).thenReturn(Optional.of(Data.ROOM));
         assertDoesNotThrow(() -> service.delete(1L));
         verify(repository).deleteById(anyLong());
     }

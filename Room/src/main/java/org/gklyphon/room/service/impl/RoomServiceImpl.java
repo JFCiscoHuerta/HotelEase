@@ -12,7 +12,6 @@ import org.gklyphon.room.service.IRoomService;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -67,9 +66,11 @@ public class RoomServiceImpl implements IRoomService {
     @Transactional
     public void delete(Long id) {
         try {
-            repository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ElementNotFoundException("Room with id:" + id + " not found.");
+            if (findById(id) != null) {
+                repository.deleteById(id);
+            }
+        } catch (ElementNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new ServiceException("Unexpected error while deleting the room", e);
         }
@@ -105,6 +106,8 @@ public class RoomServiceImpl implements IRoomService {
             Room originalRoom = findById(id);
             BeanUtils.copyProperties(roomRegisterDTO, originalRoom);
             return repository.save(originalRoom);
+        } catch (ElementNotFoundException e) {
+            throw e;
         } catch (DataIntegrityViolationException e) {
             throw new ServiceException("Error updating room. Possible data integrity issue", e);
         } catch (Exception e) {
