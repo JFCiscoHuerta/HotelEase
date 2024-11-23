@@ -1,12 +1,16 @@
 package org.gklyphon.room.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.gklyphon.room.exception.custom.ElementNotFoundException;
 import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
+import org.gklyphon.room.model.entities.RoomFeature;
+import org.gklyphon.room.model.entities.RoomImage;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
+import org.gklyphon.room.repository.IRoomFeatureRepository;
 import org.gklyphon.room.repository.IRoomRepository;
 import org.gklyphon.room.service.IRoomService;
 import org.hibernate.service.spi.ServiceException;
@@ -18,12 +22,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements IRoomService {
 
     private final IRoomRepository repository;
+    private final IRoomFeatureRepository featureRepository;
     private final IRoomMapper mapper;
 
     @Override
@@ -93,7 +100,15 @@ public class RoomServiceImpl implements IRoomService {
     @Transactional
     public Room save(RoomRegisterDTO roomRegisterDTO) {
         try {
-            return repository.save(mapper.toRoom(roomRegisterDTO));
+            Room room = mapper.toRoom(roomRegisterDTO);
+
+            handleRoomFeatures(roomRegisterDTO, room);
+            List<RoomImage> roomImages = handleRoomImages(roomRegisterDTO, room);
+
+            room.setRoomImages(roomImages);
+            return repository.save(room);
+        } catch (ElementNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             throw new ServiceException("Unexpected error while saving room", e);
         }
@@ -104,7 +119,15 @@ public class RoomServiceImpl implements IRoomService {
     public Room update(Long id, RoomRegisterDTO roomRegisterDTO) {
         try {
             Room originalRoom = findById(id);
-            BeanUtils.copyProperties(roomRegisterDTO, originalRoom);
+            Room room = mapper.toRoom(roomRegisterDTO);
+            BeanUtils.copyProperties(room, originalRoom,"id", "roomFeatures", "roomImages");
+
+            handleRoomFeatures(roomRegisterDTO, originalRoom);
+            List<RoomImage> roomImages = handleRoomImages(roomRegisterDTO, originalRoom);
+
+            originalRoom.getRoomImages().clear();
+            originalRoom.getRoomImages().addAll(roomImages);
+
             return repository.save(originalRoom);
         } catch (ElementNotFoundException e) {
             throw e;
@@ -113,5 +136,22 @@ public class RoomServiceImpl implements IRoomService {
         } catch (Exception e) {
             throw new ServiceException("Unexpected error while updating room", e);
         }
+    }
+
+    private List<RoomImage> handleRoomImages(RoomRegisterDTO roomRegisterDTO, Room room) {
+        List<RoomImage> roomImages = mapper.toRoomImages(roomRegisterDTO.getRoomImages());
+        for (RoomImage roomImage : roomImages) {
+            roomImage.setRoom(room);
+        }
+        return roomImages;
+    }
+
+    private void handleRoomFeatures(RoomRegisterDTO roomRegisterDTO, Room room) {
+        List<Long> roomFeaturesIds = roomRegisterDTO.getRoomFeatureIds();
+        List<RoomFeature> existingRoomFeatures = featureRepository.findAllById(roomFeaturesIds);
+        if (roomFeaturesIds.size() > existingRoomFeatures.size()) {
+            throw new ElementNotFoundException("One or more Room Features not found");
+        }
+        room.setRoomFeatures(existingRoomFeatures);
     }
 }
