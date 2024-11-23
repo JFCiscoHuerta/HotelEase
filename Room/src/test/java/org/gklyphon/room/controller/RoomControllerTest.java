@@ -4,21 +4,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.gklyphon.room.Data;
+import org.gklyphon.room.exception.custom.ElementNotFoundException;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
 import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
 import org.gklyphon.room.service.impl.RoomServiceImpl;
+import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -74,7 +78,18 @@ class RoomControllerTest {
     }
 
     @Test
-    void createRoom() throws Exception {
+    void getById_shouldThrowElementNotFoundException() throws Exception {
+        doThrow(new ElementNotFoundException("Element not found")).when(service).findById(anyLong());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(API_URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        verify(service).findById(anyLong());
+    }
+
+    @Test
+    void createRoomTest() throws Exception {
         when(service.save(any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
         mockMvc.perform(
                 MockMvcRequestBuilders.post(API_URL + "/create")
@@ -86,7 +101,27 @@ class RoomControllerTest {
     }
 
     @Test
-    void updateRoom() throws Exception {
+    void createRoom_shouldThrowServiceException() throws Exception {
+        doThrow(ServiceException.class).when(service).save(any(RoomRegisterDTO.class));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(API_URL + "/create")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO)))
+                .andExpect(status().isInternalServerError());
+        verify(service).save(any(RoomRegisterDTO.class));
+    }
+
+    @Test
+    void createRoom_shouldThrowMethodArgumentNotValidException() throws Exception {
+        RoomRegisterDTO invalidDTO = new RoomRegisterDTO();
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post(API_URL + "/create")
+                                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(invalidDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateRoomTest() throws Exception {
         when(service.update(anyLong(), any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_URL + "/update/1")
@@ -98,12 +133,43 @@ class RoomControllerTest {
     }
 
     @Test
+    void updateRoom_shouldThrowServiceException() throws Exception {
+        doThrow(new ServiceException("Unexpected Exception")).when(service).update(anyLong(), any(RoomRegisterDTO.class));
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put(API_URL + "/update/1")
+                                .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
+        verify(service).update(anyLong(), any(RoomRegisterDTO.class));
+    }
+
+    @Test
+    void updateRoom_shouldThrowMethodArgumentNotValidException() throws Exception {
+        RoomRegisterDTO invalidDTO = new RoomRegisterDTO();
+        mockMvc.perform(
+                        MockMvcRequestBuilders.put(API_URL + "/update/1")
+                                .content(objectMapper.writeValueAsString(invalidDTO))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void deleteRoomTest() throws Exception {
         doNothing().when(service).delete(anyLong());
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(API_URL + "/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+        verify(service).delete(anyLong());
+    }
+
+    @Test
+    void deleteRoom_shouldThrowElementNotFoundException() throws Exception {
+        doThrow(ElementNotFoundException.class).when(service).delete(anyLong());
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete(API_URL + "/delete/1")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
         verify(service).delete(anyLong());
     }
 
