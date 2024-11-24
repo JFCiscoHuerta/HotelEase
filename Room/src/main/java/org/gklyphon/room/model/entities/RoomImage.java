@@ -1,5 +1,6 @@
 package org.gklyphon.room.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -21,6 +22,6 @@ public class RoomImage extends Auditable {
     private String path;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 }

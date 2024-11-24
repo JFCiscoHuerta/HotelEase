@@ -7,7 +7,6 @@ import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
 import org.gklyphon.room.service.IRoomService;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +15,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/rooms")

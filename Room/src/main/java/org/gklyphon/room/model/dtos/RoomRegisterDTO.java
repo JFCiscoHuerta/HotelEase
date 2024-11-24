@@ -25,10 +25,7 @@ public class RoomRegisterDTO {
     @NotBlank
     private String roomState;
 
-    @NotEmpty
-    @Size(min = 1)
     private List<RoomImageRegisterDTO> roomImages;
 
-    @NotEmpty
-    private List<RoomFeatureRegisterDTO> roomFeatures;
+    private List<Long> roomFeatureIds;
 }

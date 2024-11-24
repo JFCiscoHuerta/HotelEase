@@ -56,25 +56,49 @@ public class Data {
                     List.of(
                             RoomImageRegisterDTO.builder()
                                     .path("/path")
-                                    .roomId(1L)
                                     .build()
                     )
             )
-            .roomFeatures(
-                    List.of(
-                            RoomFeatureRegisterDTO.builder()
-                                    .serviceName("TV")
-                                    .servicePrice(new BigDecimal("5.00"))
-                                    .build(),
-                            RoomFeatureRegisterDTO.builder()
-                                    .serviceName("XBOX")
-                                    .servicePrice(new BigDecimal("3.00"))
-                                    .build()
-                    )
-            )
+            .roomFeatureIds(List.of(1L))
             .build();
 
     public static final List<Room> ROOMS = List.of(ROOM);
 
     public static final Page<Room> PAGE_ROOMS = new PageImpl<Room>(ROOMS);
+
+    public static final RoomFeature ROOM_FEATURE = RoomFeature.builder()
+                    .id(1L)
+                    .serviceName("Wifi")
+                    .servicePrice(new BigDecimal("12"))
+                    .build();
+
+    public static final List<RoomFeature> ROOM_FEATURES = List.of(
+            ROOM_FEATURE
+    );
+
+    public static final Page<RoomFeature> ROOM_FEATURES_PAGE = new PageImpl<>(ROOM_FEATURES);
+
+    public static final RoomFeatureRegisterDTO ROOM_FEATURE_REGISTER_DTO = RoomFeatureRegisterDTO.builder()
+            .serviceName("Wifi")
+            .servicePrice(new BigDecimal("12"))
+            .build();
+
+
+    public static final List<RoomFeatureRegisterDTO> ROOM_FEATURES_DTO = List.of(
+        ROOM_FEATURE_REGISTER_DTO
+    );
+
+    public static final List<RoomImage> ROOM_IMAGES = List.of(
+            RoomImage.builder()
+                    .id(1L)
+                    .room(new Room())
+                    .path("")
+                    .build()
+    );
+
+    public static final List<RoomImageRegisterDTO> ROOM_IMAGES_REGISTER_DTO = List.of(
+            RoomImageRegisterDTO.builder()
+                    .path("")
+                    .build()
+    );
 }
