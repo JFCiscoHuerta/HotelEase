@@ -66,12 +66,26 @@ public class Data {
 
     public static final Page<Room> PAGE_ROOMS = new PageImpl<Room>(ROOMS);
 
-    public static final List<RoomFeature> ROOM_FEATURES = List.of(
-            RoomFeature.builder()
+    public static final RoomFeature ROOM_FEATURE = RoomFeature.builder()
                     .id(1L)
                     .serviceName("Wifi")
                     .servicePrice(new BigDecimal("12"))
-                    .build()
+                    .build();
+
+    public static final List<RoomFeature> ROOM_FEATURES = List.of(
+            ROOM_FEATURE
+    );
+
+    public static final Page<RoomFeature> ROOM_FEATURES_PAGE = new PageImpl<>(ROOM_FEATURES);
+
+    public static final RoomFeatureRegisterDTO ROOM_FEATURE_REGISTER_DTO = RoomFeatureRegisterDTO.builder()
+            .serviceName("Wifi")
+            .servicePrice(new BigDecimal("12"))
+            .build();
+
+
+    public static final List<RoomFeatureRegisterDTO> ROOM_FEATURES_DTO = List.of(
+        ROOM_FEATURE_REGISTER_DTO
     );
 
     public static final List<RoomImage> ROOM_IMAGES = List.of(
