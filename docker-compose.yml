@@ -5,6 +5,10 @@ services:
     image: mysql:8
     ports:
       - "3306:3306"
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost" ]
+      interval: 10s
+      retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -12,7 +16,7 @@ services:
       - data-mysql:/var/lib/mysql
     restart: always
     networks:
-      - spring
+      - hotel-ease
 
   room-app:
     container_name: room-app
@@ -21,17 +25,18 @@ services:
       dockerfile: ./Room/Dockerfile
     ports:
       - "8081:8081"
-    env_file:
-      - ./Room/.env
-    networks:
-      - spring
+    env_file: ./Room/.env
     depends_on:
-      - mysql8
+      mysql8:
+        condition: service_healthy
     restart: always
+    networks:
+      - hotel-ease
 
 volumes:
   data-mysql:
     name: data-mysql
 
 networks:
-  spring:
+  hotel-ease:
+    driver: bridge
