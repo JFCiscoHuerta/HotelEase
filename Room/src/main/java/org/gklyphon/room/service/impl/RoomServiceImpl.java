@@ -1,7 +1,6 @@
 package org.gklyphon.room.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.gklyphon.room.exception.custom.ElementNotFoundException;
 import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
@@ -25,7 +24,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
+/**
+ * Implementation of the {@link IRoomService} interface for handling {@link Room} entities.
+ * This service provides the business logic for managing rooms, including searching,
+ * saving, updating, and deleting room records. It also handles room features and images.
+ */
 @Service
 @RequiredArgsConstructor
 public class RoomServiceImpl implements IRoomService {
@@ -34,42 +37,92 @@ public class RoomServiceImpl implements IRoomService {
     private final IRoomFeatureRepository featureRepository;
     private final IRoomMapper mapper;
 
+    /**
+     * Finds rooms with a price range between the specified minimum and maximum price per night.
+     *
+     * @param min the minimum price per night
+     * @param max the maximum price per night
+     * @param pageable pagination information
+     * @return a paginated list of rooms within the specified price range
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByPriceByNightBetween(BigDecimal min, BigDecimal max, Pageable pageable) {
         return repository.findByPriceByNightBetween(min, max, pageable);
     }
 
+    /**
+     * Finds rooms with a price greater than the specified price per night.
+     *
+     * @param priceByNight the price per night
+     * @param pageable pagination information
+     * @return a paginated list of rooms with a price greater than the specified price
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByPriceByNightGreaterThan(BigDecimal priceByNight, Pageable pageable) {
         return repository.findByPriceByNightGreaterThan(priceByNight, pageable);
     }
 
+    /**
+     * Finds rooms with a price less than the specified price per night.
+     *
+     * @param priceByNight the price per night
+     * @param pageable pagination information
+     * @return a paginated list of rooms with a price less than the specified price
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByPriceByNightLessThan(BigDecimal priceByNight, Pageable pageable) {
         return repository.findByPriceByNightLessThan(priceByNight, pageable);
     }
 
+    /**
+     * Finds rooms based on the specified room state.
+     *
+     * @param roomState the state of the room
+     * @param pageable pagination information
+     * @return a paginated list of rooms with the specified room state
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByRoomState(RoomState roomState, Pageable pageable) {
         return repository.findByRoomState(roomState, pageable);
     }
 
+    /**
+     * Finds rooms based on the specified room type.
+     *
+     * @param roomType the type of the room
+     * @param pageable pagination information
+     * @return a paginated list of rooms with the specified room type
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByRoomType(RoomType roomType, Pageable pageable) {
         return repository.findByRoomType(roomType, pageable);
     }
 
+    /**
+     * Finds rooms based on both room type and room state.
+     *
+     * @param roomType the type of the room
+     * @param roomState the state of the room
+     * @param pageable pagination information
+     * @return a paginated list of rooms with the specified room type and state
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findByRoomTypeAndRoomState(RoomType roomType, RoomState roomState, Pageable pageable) {
         return repository.findByRoomTypeAndRoomState(roomType, roomState, pageable);
     }
 
+    /**
+     * Deletes a room by its ID.
+     *
+     * @param id the ID of the room to be deleted
+     * @throws ServiceException if an unexpected error occurs during deletion
+     */
     @Override
     @Transactional
     public void delete(Long id) {
@@ -84,12 +137,25 @@ public class RoomServiceImpl implements IRoomService {
         }
     }
 
+    /**
+     * Finds all rooms with pagination.
+     *
+     * @param pageable pagination information
+     * @return a paginated list of all rooms
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<Room> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
+    /**
+     * Finds a room by its ID.
+     *
+     * @param id the ID of the room to be found
+     * @return the room with the specified ID
+     * @throws ElementNotFoundException if the room with the specified ID is not found
+     */
     @Override
     @Transactional(readOnly = true)
     public Room findById(Long id) {
@@ -97,6 +163,13 @@ public class RoomServiceImpl implements IRoomService {
                 .orElseThrow(() -> new ElementNotFoundException("Room with id: " + id + " not found."));
     }
 
+    /**
+     * Saves a new room based on the provided {@link RoomRegisterDTO}.
+     *
+     * @param roomRegisterDTO the data transfer object containing room details
+     * @return the saved room entity
+     * @throws ServiceException if an unexpected error occurs while saving the room
+     */
     @Override
     @Transactional
     public Room save(RoomRegisterDTO roomRegisterDTO) {
@@ -115,6 +188,14 @@ public class RoomServiceImpl implements IRoomService {
         }
     }
 
+    /**
+     * Updates an existing room by its ID using the provided {@link RoomRegisterDTO}.
+     *
+     * @param id the ID of the room to be updated
+     * @param roomRegisterDTO the data transfer object containing the updated room details
+     * @return the updated room entity
+     * @throws ServiceException if an unexpected error occurs while updating the room
+     */
     @Override
     @Transactional
     public Room update(Long id, RoomRegisterDTO roomRegisterDTO) {
@@ -140,6 +221,13 @@ public class RoomServiceImpl implements IRoomService {
         }
     }
 
+    /**
+     * Handles the room images by mapping the provided DTO to {@link RoomImage} entities and associating them with the room.
+     *
+     * @param roomRegisterDTO the data transfer object containing the room images
+     * @param room the room entity to associate the images with
+     * @return a list of {@link RoomImage} entities
+     */
     private List<RoomImage> handleRoomImages(RoomRegisterDTO roomRegisterDTO, Room room) {
         List<RoomImage> roomImages = mapper.toRoomImages(roomRegisterDTO.getRoomImages());
         for (RoomImage roomImage : roomImages) {
@@ -148,6 +236,13 @@ public class RoomServiceImpl implements IRoomService {
         return roomImages;
     }
 
+    /**
+     * Handles the room features by validating the provided feature IDs and associating them with the room.
+     *
+     * @param roomRegisterDTO the data transfer object containing the room feature IDs
+     * @param room the room entity to associate the features with
+     * @throws ElementNotFoundException if one or more features are not found
+     */
     private void handleRoomFeatures(RoomRegisterDTO roomRegisterDTO, Room room) {
         List<Long> roomFeaturesIds = roomRegisterDTO.getRoomFeatureIds();
         List<RoomFeature> existingRoomFeatures = featureRepository.findAllById(roomFeaturesIds);

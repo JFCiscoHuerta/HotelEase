@@ -1,12 +1,10 @@
 package org.gklyphon.room.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.gklyphon.room.Data;
 import org.gklyphon.room.exception.custom.ElementNotFoundException;
 import org.gklyphon.room.model.dtos.RoomRegisterDTO;
-import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.enums.RoomState;
 import org.gklyphon.room.model.entities.enums.RoomType;
 import org.gklyphon.room.service.impl.RoomServiceImpl;
@@ -17,20 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -94,7 +89,8 @@ class RoomControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(API_URL + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO)))
+                        .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO))
+                        .with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.roomNumber").value(101L));
         verify(service).save(any(RoomRegisterDTO.class));
@@ -106,7 +102,9 @@ class RoomControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post(API_URL + "/create")
-                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO))
+                        .with(csrf()))
                 .andExpect(status().isInternalServerError());
         verify(service).save(any(RoomRegisterDTO.class));
     }
@@ -116,7 +114,9 @@ class RoomControllerTest {
         RoomRegisterDTO invalidDTO = new RoomRegisterDTO();
         mockMvc.perform(
                         MockMvcRequestBuilders.post(API_URL + "/create")
-                                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(invalidDTO)))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(invalidDTO))
+                                .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -126,7 +126,8 @@ class RoomControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_URL + "/update/1")
                         .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.roomNumber").value(101L));
         verify(service).update(anyLong(), any(RoomRegisterDTO.class));
@@ -138,7 +139,8 @@ class RoomControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.put(API_URL + "/update/1")
                                 .content(objectMapper.writeValueAsString(Data.ROOM_REGISTER_DTO))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isInternalServerError());
         verify(service).update(anyLong(), any(RoomRegisterDTO.class));
     }
@@ -149,7 +151,8 @@ class RoomControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.put(API_URL + "/update/1")
                                 .content(objectMapper.writeValueAsString(invalidDTO))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -158,7 +161,8 @@ class RoomControllerTest {
         doNothing().when(service).delete(anyLong());
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(API_URL + "/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
         verify(service).delete(anyLong());
     }
@@ -168,7 +172,8 @@ class RoomControllerTest {
         doThrow(ElementNotFoundException.class).when(service).delete(anyLong());
         mockMvc.perform(
                         MockMvcRequestBuilders.delete(API_URL + "/delete/1")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isNotFound());
         verify(service).delete(anyLong());
     }

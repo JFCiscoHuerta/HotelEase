@@ -14,6 +14,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service implementation for managing {@link RoomFeature} entities.
+ *
+ * <p>This service provides methods to create, update, find, and delete room features,
+ * as well as to retrieve all room features with pagination support.</p>
+ *
+ * @author JFCiscoHuerta
+ * @version 1.0
+ * @since 25-Nov-2024
+ */
 @Service
 @RequiredArgsConstructor
 public class RoomFeatureServiceImpl implements IRoomFeatureService {
@@ -21,6 +31,13 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
     private final IRoomFeatureRepository featureRepository;
     private final IRoomMapper mapper;
 
+    /**
+     * Finds a {@link RoomFeature} by its id.
+     *
+     * @param id the id of the room feature to find
+     * @return the found room feature
+     * @throws ElementNotFoundException if no room feature is found with the given id
+     */
     @Override
     @Transactional(readOnly = true)
     public RoomFeature findById(Long id) {
@@ -28,12 +45,24 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
                 .orElseThrow(() -> new ElementNotFoundException("Room Feature with id:" + id + " not found."));
     }
 
+    /**
+     * Finds all room features, with pagination support.
+     *
+     * @param pageable pagination information
+     * @return a page of room features
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<RoomFeature> findAll(Pageable pageable) {
         return featureRepository.findAll(pageable);
     }
 
+    /**
+     * Deletes a room feature by its id.
+     *
+     * @param id the id of the room feature to delete
+     * @throws ServiceException if an unexpected error occurs during deletion
+     */
     @Override
     @Transactional
     public void delete(Long id) {
@@ -48,6 +77,13 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
         }
     }
 
+    /**
+     * Saves a new {@link RoomFeature} based on the provided {@link RoomFeatureRegisterDTO}.
+     *
+     * @param roomFeatureRegisterDTO the DTO containing the data for the new room feature
+     * @return the saved room feature
+     * @throws ServiceException if an unexpected error occurs during saving
+     */
     @Override
     @Transactional
     public RoomFeature save(RoomFeatureRegisterDTO roomFeatureRegisterDTO) {
@@ -58,6 +94,15 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
         }
     }
 
+    /**
+     * Updates an existing room feature with new data.
+     *
+     * @param id the id of the room feature to update
+     * @param roomFeatureRegisterDTO the DTO containing the updated data
+     * @return the updated room feature
+     * @throws ElementNotFoundException if no room feature is found with the given id
+     * @throws ServiceException if an unexpected error occurs during the update
+     */
     @Override
     @Transactional
     public RoomFeature update(Long id, RoomFeatureRegisterDTO roomFeatureRegisterDTO) {

@@ -25,21 +25,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit test class for the `RoomServiceImpl` class, responsible for testing the service layer
+ * of room management in the application. This class ensures that the methods within `RoomServiceImpl`
+ * work as expected by mocking the dependencies such as the `IRoomRepository`, `IRoomFeatureRepository`, and `IRoomMapper`.
+ * All tests are written using the Mockito framework to mock external interactions and validate the logic of the service methods.
+ *
+ * @author JFCiscoHuerta
+ * @version 1.0
+ * @since  25-Nov-2024
+ */
 @ExtendWith(MockitoExtension.class)
 class RoomServiceImplTest {
 
+    /**
+     * Mocked instance of the room repository interface.
+     * Used to simulate interactions with the database for room-related operations.
+     */
     @Mock
     IRoomRepository repository;
 
+    /**
+     * Mocked instance of the room feature repository interface.
+     * Used to simulate interactions with the database for room feature-related operations.
+     */
     @Mock
     IRoomFeatureRepository featureRepository;
 
+    /**
+     * Mocked instance of the room mapper.
+     * Used to simulate the conversion between `RoomRegisterDTO` and `Room` entities.
+     */
     @Mock
     IRoomMapper mapper;
 
+    /**
+     * Instance of the `RoomServiceImpl` class that is being tested.
+     * The service layer class that contains business logic related to rooms.
+     */
     @InjectMocks
     RoomServiceImpl service;
 
+    /**
+     * Test case to verify the `findByPriceByNightBetween` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves a list of rooms within a specified price range.
+     */
     @Test
     void findByPriceByNightBetween() {
         when(repository.findByPriceByNightBetween(any(BigDecimal.class), any(BigDecimal.class), any(Pageable.class)))
@@ -51,6 +81,10 @@ class RoomServiceImplTest {
         verify(repository).findByPriceByNightBetween(any(BigDecimal.class), any(BigDecimal.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findByPriceByNightGreaterThan` method in the `RoomServiceImpl` class.
+     * Validates that the method retrieves rooms where the price per night is greater than a specified value.
+     */
     @Test
     void findByPriceByNightGreaterThan() {
         when(repository.findByPriceByNightGreaterThan(any(BigDecimal.class), any(Pageable.class)))
@@ -61,6 +95,10 @@ class RoomServiceImplTest {
         verify(repository).findByPriceByNightGreaterThan(any(BigDecimal.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findByPriceByNightLessThan` method in the `RoomServiceImpl` class.
+     * Validates that the method retrieves rooms where the price per night is less than a specified value.
+     */
     @Test
     void findByPriceByNightLessThan() {
         when(repository.findByPriceByNightLessThan(any(BigDecimal.class), any(Pageable.class)))
@@ -71,6 +109,10 @@ class RoomServiceImplTest {
         verify(repository).findByPriceByNightLessThan(any(BigDecimal.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findByRoomState` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves rooms with a specific room state.
+     */
     @Test
     void findByRoomState() {
         when(repository.findByRoomState(any(RoomState.class), any(Pageable.class)))
@@ -81,6 +123,10 @@ class RoomServiceImplTest {
         verify(repository).findByRoomState(any(RoomState.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findByRoomType` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves rooms of a specified room type.
+     */
     @Test
     void findByRoomType() {
         when(repository.findByRoomType(any(RoomType.class), any(Pageable.class)))
@@ -91,6 +137,10 @@ class RoomServiceImplTest {
         verify(repository).findByRoomType(any(RoomType.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findByRoomTypeAndRoomState` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves rooms that match both a specified room type and room state.
+     */
     @Test
     void findByRoomTypeAndRoomState() {
         when(repository.findByRoomTypeAndRoomState(any(RoomType.class), any(RoomState.class), any(Pageable.class)))
@@ -101,6 +151,10 @@ class RoomServiceImplTest {
         verify(repository).findByRoomTypeAndRoomState(any(RoomType.class), any(RoomState.class), any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `delete` method in the `RoomServiceImpl` class.
+     * Validates that the room is deleted correctly without throwing any exception.
+     */
     @Test
     void delete() {
         doNothing().when(repository).deleteById(anyLong());
@@ -109,6 +163,10 @@ class RoomServiceImplTest {
         verify(repository).deleteById(anyLong());
     }
 
+    /**
+     * Test case to verify the `findAll` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves all rooms in a paginated manner.
+     */
     @Test
     void findAll() {
         when(repository.findAll(any(Pageable.class))).thenReturn(Data.PAGE_ROOMS);
@@ -117,6 +175,10 @@ class RoomServiceImplTest {
         verify(repository).findAll(any(Pageable.class));
     }
 
+    /**
+     * Test case to verify the `findById` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly retrieves a room by its ID.
+     */
     @Test
     void findById() {
         when(repository.findById(anyLong())).thenReturn(Optional.of(Data.ROOM));
@@ -125,6 +187,10 @@ class RoomServiceImplTest {
         verify(repository).findById(anyLong());
     }
 
+    /**
+     * Test case to verify the `save` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly saves a new room based on the provided DTO.
+     */
     @Test
     void save() {
         when(mapper.toRoom(any(RoomRegisterDTO.class))).thenReturn(Data.ROOM);
@@ -136,6 +202,10 @@ class RoomServiceImplTest {
         verify(mapper).toRoom(any(RoomRegisterDTO.class));
     }
 
+    /**
+     * Test case to verify the `update` method in the `RoomServiceImpl` class.
+     * Validates that the method correctly updates an existing room based on the provided DTO.
+     */
     @Test
     void update() {
         when(repository.findById(anyLong())).thenReturn(Optional.of(Data.ROOM));
