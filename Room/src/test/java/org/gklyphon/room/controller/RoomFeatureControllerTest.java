@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.gklyphon.room.Data;
 import org.gklyphon.room.exception.custom.ElementNotFoundException;
-import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomFeatureRegisterDTO;
 import org.gklyphon.room.service.IRoomFeatureService;
 import org.hibernate.service.spi.ServiceException;
@@ -18,10 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,7 +74,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.post(API_PATH + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO)))
+                    .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO))
+                        .with(csrf()))
 
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
@@ -89,7 +89,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(API_PATH + "/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(invalid)))
+                                .content(objectMapper.writeValueAsString(invalid))
+                                .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -99,7 +100,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.post(API_PATH + "/create")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO)))
+                                .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO))
+                                .with(csrf()))
                 .andExpect(status().isInternalServerError());
         verify(service).save(any(RoomFeatureRegisterDTO.class));
     }
@@ -111,7 +113,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_PATH + "/update/1")
                         .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L));
         verify(service).update(anyLong(), any(RoomFeatureRegisterDTO.class));
@@ -123,7 +126,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.put(API_PATH + "/update/1")
                                 .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isNotFound());
         verify(service).update(anyLong(), any(RoomFeatureRegisterDTO.class));
     }
@@ -134,7 +138,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.put(API_PATH + "/update/1")
                                 .content(objectMapper.writeValueAsString(invalid))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -144,7 +149,8 @@ class RoomFeatureControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.put(API_PATH + "/update/1")
                                 .content(objectMapper.writeValueAsString(Data.ROOM_FEATURE_REGISTER_DTO))
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .with(csrf()))
                 .andExpect(status().isInternalServerError());
         verify(service).update(anyLong(), any(RoomFeatureRegisterDTO.class));
     }
@@ -154,7 +160,8 @@ class RoomFeatureControllerTest {
         doNothing().when(service).delete(anyLong());
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(API_PATH + "/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
         verify(service).delete(anyLong());
     }
