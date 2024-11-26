@@ -32,9 +32,8 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findAll(pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(
+                handlePageModels(roomService.findAll(pageable)));
     }
 
     @GetMapping("/{id}")
@@ -70,9 +69,8 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByPriceByNightBetween(min, max, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(
+                handlePageModels(roomService.findByPriceByNightBetween(min, max, pageable)));
     }
 
     @GetMapping("/price-by-night-grater-than")
@@ -81,9 +79,8 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByPriceByNightGreaterThan(priceByNight, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(
+                handlePageModels(roomService.findByPriceByNightGreaterThan(priceByNight, pageable)));
     }
 
     @GetMapping("/price-by-night-less-than")
@@ -92,10 +89,11 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByPriceByNightLessThan(priceByNight, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(handlePageModels(
+                roomService.findByPriceByNightLessThan(priceByNight, pageable)));
     }
+
+
 
     @GetMapping("/by-room-state")
     public ResponseEntity<?> getByRoomState(
@@ -103,9 +101,8 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByRoomState(roomState, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(
+                handlePageModels(roomService.findByRoomState(roomState, pageable)));
     }
 
     @GetMapping("/by-room-type")
@@ -114,9 +111,7 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByRoomType(roomType, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(handlePageModels(roomService.findByRoomType(roomType, pageable)));
     }
 
     @GetMapping("/by-room-type-and-room-state")
@@ -126,9 +121,12 @@ public class RoomController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Room> roomPage = roomService.findByRoomTypeAndRoomState(roomType, roomState, pageable);
-        PagedModel<EntityModel<Room>> pagedModel = pagedResourcesAssembler.toModel(roomPage);
-        return ResponseEntity.ok(pagedModel);
+        return ResponseEntity.ok(
+                handlePageModels(roomService.findByRoomTypeAndRoomState(roomType, roomState, pageable))
+        );
     }
 
+    private PagedModel<EntityModel<Room>> handlePageModels(Page<Room> page) {
+        return pagedResourcesAssembler.toModel(page);
+    }
 }

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gklyphon.room.mapper.IRoomMapper;
 import org.gklyphon.room.model.dtos.RoomFeatureRegisterDTO;
-import org.gklyphon.room.model.entities.Room;
 import org.gklyphon.room.model.entities.RoomFeature;
 import org.gklyphon.room.service.IRoomFeatureService;
 import org.springframework.data.domain.Page;
