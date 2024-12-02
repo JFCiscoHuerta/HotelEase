@@ -64,7 +64,7 @@ class RoomFeatureControllerTest {
      */
     @Test
     void getAllRoomFeatures() throws Exception {
-        when(service.findAll(any(Pageable.class))).thenReturn(Data.ROOM_FEATURES_PAGE);
+        when(service.findAllPageable(any(Pageable.class))).thenReturn(Data.ROOM_FEATURES_PAGE);
         mockMvc.perform(
                 MockMvcRequestBuilders.get(API_PATH)
                         .param("page", "0")
@@ -72,7 +72,7 @@ class RoomFeatureControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.roomFeatureList[0].id").value(1L));
-        verify(service).findAll(any(Pageable.class));
+        verify(service).findAllPageable(any(Pageable.class));
     }
 
     /**
