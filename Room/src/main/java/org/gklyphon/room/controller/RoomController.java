@@ -63,7 +63,7 @@ public class RoomController {
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(
-                handlePageModels(roomService.findAll(pageable)));
+                handlePageModels(roomService.findAllPageable(pageable)));
     }
 
     /**
