@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
 public class RoomFeatureController {
 
     private final IRoomFeatureService service;
-    private final IRoomMapper mapper;
     private final PagedResourcesAssembler<RoomFeature> pagedResourcesAssembler;
 
     /**
@@ -54,7 +53,7 @@ public class RoomFeatureController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<RoomFeature> roomFeaturePage = service.findAll(pageable);
+        Page<RoomFeature> roomFeaturePage = service.findAllPageable(pageable);
         PagedModel<EntityModel<RoomFeature>> pagedModel = pagedResourcesAssembler.toModel(roomFeaturePage);
         return ResponseEntity.ok(pagedModel);
     }
@@ -109,5 +108,15 @@ public class RoomFeatureController {
     public ResponseEntity<?> deleteRoomFeature(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Retrieves a list of room features.
+     *
+     * @return a ResponseEntity containing the room features
+     */
+    @GetMapping("/all")
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(service.findAll());
     }
 }

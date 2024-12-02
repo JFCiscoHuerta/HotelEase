@@ -145,7 +145,7 @@ public class RoomServiceImpl implements IRoomService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<Room> findAll(Pageable pageable) {
+    public Page<Room> findAllPageable(Pageable pageable) {
         return repository.findAll(pageable);
     }
 

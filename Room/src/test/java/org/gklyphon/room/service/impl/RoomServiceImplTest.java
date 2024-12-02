@@ -168,9 +168,9 @@ class RoomServiceImplTest {
      * Validates that the method correctly retrieves all rooms in a paginated manner.
      */
     @Test
-    void findAll() {
+    void findAllPageable() {
         when(repository.findAll(any(Pageable.class))).thenReturn(Data.PAGE_ROOMS);
-        Page<Room> roomsPage = service.findAll(mock(Pageable.class));
+        Page<Room> roomsPage = service.findAllPageable(mock(Pageable.class));
         assertThat(roomsPage.getContent()).hasSize(1);
         verify(repository).findAll(any(Pageable.class));
     }

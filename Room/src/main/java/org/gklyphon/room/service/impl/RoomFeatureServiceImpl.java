@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Service implementation for managing {@link RoomFeature} entities.
  *
@@ -53,7 +55,7 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<RoomFeature> findAll(Pageable pageable) {
+    public Page<RoomFeature> findAllPageable(Pageable pageable) {
         return featureRepository.findAll(pageable);
     }
 
@@ -115,5 +117,16 @@ public class RoomFeatureServiceImpl implements IRoomFeatureService {
         } catch (Exception e) {
             throw new ServiceException("Unexpected error while updating room feature");
         }
+    }
+
+    /**
+     * Finds all room features.
+     *
+     * @return a list of room features
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<RoomFeature> findAll() {
+        return featureRepository.findAll();
     }
 }

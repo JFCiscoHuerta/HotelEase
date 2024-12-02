@@ -3,6 +3,8 @@ package org.gklyphon.room.service;
 import org.gklyphon.room.model.dtos.RoomFeatureRegisterDTO;
 import org.gklyphon.room.model.entities.RoomFeature;
 
+import java.util.List;
+
 /**
  * Service interface for handling {@link RoomFeature} entities.
  * Extends the {@link IService} interface to provide basic CRUD operations,
@@ -26,4 +28,11 @@ public interface IRoomFeatureService extends IService<RoomFeature> {
      * @return the updated {@link RoomFeature} entity
      */
     RoomFeature update(Long id, RoomFeatureRegisterDTO roomFeatureRegisterDTO);
+
+    /**
+     * Retrieves a list of all entities of type {@code RoomFeature}
+     *
+     * @return a {@link List} of entities of type {@code RoomFeature}
+     */
+    List<RoomFeature> findAll();
 }
