@@ -4,7 +4,7 @@ COPY ./pom.xml /app
 COPY ./Room/.mvn ./.mvn
 COPY ./Room/mvnw .
 COPY ./Room/pom.xml .
-RUN ./mvnw dependency:go-offline
+RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target/
 COPY ./Room/src ./src
 RUN ./mvnw clean package -DskipTests
 
