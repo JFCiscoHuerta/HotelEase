@@ -26,7 +26,7 @@ public interface IService <T> {
      * @param pageable pagination details (page number, size, etc.)
      * @return a {@link Page} of entities of type {@code T}
      */
-    public Page<T> findAll(Pageable pageable);
+    public Page<T> findAllPageable(Pageable pageable);
 
     /**
      * Deletes an entity by its ID.
