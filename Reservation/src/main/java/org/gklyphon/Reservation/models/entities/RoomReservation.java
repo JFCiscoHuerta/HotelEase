@@ -35,6 +35,7 @@ public class RoomReservation extends Auditable {
     /**
      * The unique identifier of the room associated with this reservation.
      */
+    @Column(name = "room_id")
     private Long roomId;
 
 }
