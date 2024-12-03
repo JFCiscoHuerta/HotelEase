@@ -2,6 +2,7 @@ package org.gklyphon.Reservation.repository;
 
 import org.gklyphon.Reservation.models.entities.Reservation;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
      * @param startDate The start date of the reservation.
      * @return A {@link Page} of {@link Reservation} entities with the specified start date.
      */
-    Page<Reservation> findByStartDate(LocalDate startDate);
+    Page<Reservation> findByStartDate(LocalDate startDate, Pageable pageable);
 
     /**
      * Finds reservations by the given end date.
@@ -31,7 +32,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
      * @param endDate The end date of the reservation.
      * @return A {@link Page} of {@link Reservation} entities with the specified end date.
      */
-    Page<Reservation> findByEndDate(LocalDate endDate);
+    Page<Reservation> findByEndDate(LocalDate endDate, Pageable pageable);
 
     /**
      * Finds reservations by the user ID associated with the reservation.
@@ -39,5 +40,5 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
      * @param userId The ID of the user who made the reservation.
      * @return A {@link Page} of {@link Reservation} entities associated with the given user ID.
      */
-    Page<Reservation> findByUserId(Long userId);
+    Page<Reservation> findByUserId(Long userId, Pageable pageable);
 }
