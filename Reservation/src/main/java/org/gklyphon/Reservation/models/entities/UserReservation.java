@@ -39,5 +39,6 @@ public class UserReservation extends Auditable {
     /**
      * The unique identifier of the user associated with this reservation.
      */
+    @Column(name = "user_id")
     private Long userId;
 }
