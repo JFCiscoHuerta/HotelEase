@@ -17,6 +17,7 @@
 
   <modules>
     <module>Room</module>
+    <module>Reservation</module>
   </modules>
 
 </project>
