@@ -1,6 +1,7 @@
 package org.gklyphon.Reservation.models.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +37,12 @@ public class Reservation extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * The ID of the user who created the reservation
+     */
+    @NotNull
+    private Long userId;
 
     /**
      * The start date of the reservation.
