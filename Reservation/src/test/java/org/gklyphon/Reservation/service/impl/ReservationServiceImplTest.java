@@ -23,6 +23,21 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit test for the {@link ReservationServiceImpl} service implementation.
+ * <p>
+ * Uses Mockito to mock dependencies and verify method behavior.
+ * Tests cover basic CRUD operations and specific searches.
+ * </p>
+ *
+ * @see ReservationServiceImpl
+ * @see IReservationRepository
+ * @see IReservationMapper
+ *
+ * @author JFCiscoHuerta
+ * @version 1.0
+ * @since 3-Dec-2024
+ */
 @ExtendWith(MockitoExtension.class)
 class ReservationServiceImplTest {
 
@@ -35,6 +50,12 @@ class ReservationServiceImplTest {
     @InjectMocks
     ReservationServiceImpl service;
 
+    /**
+     * Tests deleting a reservation by its ID.
+     * <p>
+     * Verifies that the repository calls the appropriate methods to delete the reservation.
+     * </p>
+     */
     @Test
     void deleteById() {
         doNothing().when(repository).deleteById(anyLong());
@@ -46,6 +67,12 @@ class ReservationServiceImplTest {
         verify(repository).findById(anyLong());
     }
 
+    /**
+     * Tests retrieving all reservations.
+     * <p>
+     * Ensures that the list of reservations is not null and contains the expected data.
+     * </p>
+     */
     @Test
     void findAll() {
         when(repository.findAll()).thenReturn(Data.RESERVATIONS);
@@ -56,6 +83,12 @@ class ReservationServiceImplTest {
         verify(repository).findAll();
     }
 
+    /**
+     * Tests finding a reservation by its ID.
+     * <p>
+     * Verifies that the retrieved reservation matches the expected one.
+     * </p>
+     */
     @Test
     void findById() {
         when(repository.findById(anyLong())).thenReturn(Optional.of(Data.RESERVATION));
@@ -65,6 +98,12 @@ class ReservationServiceImplTest {
         verify(repository).findById(anyLong());
     }
 
+    /**
+     * Tests creating a new reservation.
+     * <p>
+     * Validates that the reservation is correctly saved in the repository.
+     * </p>
+     */
     @Test
     void save() {
         when(repository.save(any(Reservation.class))).thenReturn(Data.RESERVATION);
@@ -74,6 +113,12 @@ class ReservationServiceImplTest {
         verify(repository).save(any(Reservation.class));
     }
 
+    /**
+     * Tests creating a reservation with exception handling.
+     * <p>
+     * Simulates a failure in the repository and ensures that a {@link ServiceException} is thrown.
+     * </p>
+     */
     @Test
     void save_shouldThrowServiceException_whenFails() {
         doThrow(ServiceException.class).when(repository).save(any(Reservation.class));
@@ -82,6 +127,12 @@ class ReservationServiceImplTest {
         verify(repository).save(any(Reservation.class));
     }
 
+    /**
+     * Tests updating an existing reservation.
+     * <p>
+     * Verifies that the reservation is updated correctly and saved in the repository.
+     * </p>
+     */
     @Test
     void update() {
         when(repository.save(any(Reservation.class))).thenReturn(Data.RESERVATION);
@@ -94,6 +145,12 @@ class ReservationServiceImplTest {
         verify(repository).findById(anyLong());
     }
 
+    /**
+     * Tests updating a reservation with exception handling.
+     * <p>
+     * Simulates a failure during the update and verifies that a {@link ServiceException} is thrown.
+     * </p>
+     */
     @Test
     void update_shouldThrowServiceException_whenFails() {
         doThrow(ServiceException.class).when(repository).save(any(Reservation.class));
@@ -104,6 +161,12 @@ class ReservationServiceImplTest {
         verify(repository).findById(anyLong());
     }
 
+    /**
+     * Tests finding reservations by start date.
+     * <p>
+     * Validates that the retrieved reservations match the specified start date.
+     * </p>
+     */
     @Test
     void findByStartDate() {
         when(repository.findByStartDate(any(LocalDate.class), any(Pageable.class))).thenReturn(Data.RESERVATION_PAGE);
@@ -113,6 +176,12 @@ class ReservationServiceImplTest {
         verify(repository).findByStartDate(any(LocalDate.class), any(Pageable.class));
     }
 
+    /**
+     * Tests finding reservations by end date.
+     * <p>
+     * Validates that the retrieved reservations match the specified end date.
+     * </p>
+     */
     @Test
     void findByEndDate() {
         when(repository.findByEndDate(any(LocalDate.class), any(Pageable.class))).thenReturn(Data.RESERVATION_PAGE);
@@ -122,6 +191,12 @@ class ReservationServiceImplTest {
         verify(repository).findByEndDate(any(LocalDate.class), any(Pageable.class));
     }
 
+    /**
+     * Tests finding reservations by user ID.
+     * <p>
+     * Verifies that the retrieved reservations correspond to the specified user.
+     * </p>
+     */
     @Test
     void findByUserId() {
         when(repository.findByUserId(anyLong(), any(Pageable.class))).thenReturn(Data.RESERVATION_PAGE);
