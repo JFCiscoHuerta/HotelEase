@@ -1,6 +1,7 @@
 package org.gklyphon.Reservation.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gklyphon.Reservation.exception.exception.ElementNotFoundException;
 import org.gklyphon.Reservation.mapper.IReservationMapper;
 import org.gklyphon.Reservation.models.dtos.ReservationDTO;
 import org.gklyphon.Reservation.models.entities.Reservation;
@@ -61,8 +62,10 @@ public class ReservationServiceImpl implements IReservationService {
             if (findById(id) != null) {
                 repository.deleteById(id);
             }
+        } catch (ElementNotFoundException e) {
+            throw e;
         } catch (Exception e) {
-            throw new ServiceException("");
+            throw new ServiceException("Unexpected error while deleting the reservation.", e);
         }
     }
 
@@ -95,7 +98,7 @@ public class ReservationServiceImpl implements IReservationService {
     @Transactional(readOnly = true)
     public Reservation findById(Long id) {
         return repository.findById(id)
-                .orElseThrow();
+                .orElseThrow(()-> new ElementNotFoundException("Reservation with id " + id + " not found."));
     }
 
     /**
@@ -114,8 +117,8 @@ public class ReservationServiceImpl implements IReservationService {
     public Reservation save(ReservationDTO reservationDTO) {
         try {
             return repository.save(mapper.toReservation(reservationDTO));
-        } catch (Exception ex) {
-            throw new ServiceException("");
+        } catch (Exception e) {
+            throw new ServiceException("Unexpected error while saving reservation.", e);
         }
     }
 
@@ -137,10 +140,12 @@ public class ReservationServiceImpl implements IReservationService {
         try {
             Reservation reservation = mapper.toReservation(reservationDTO);
             Reservation originalReservation = findById(id);
-            BeanUtils.copyProperties(reservation, originalReservation,"id");
+            BeanUtils.copyProperties(reservation, originalReservation, "id");
             return repository.save(originalReservation);
+        } catch (ElementNotFoundException e) {
+            throw e;
         } catch (Exception e) {
-            throw new ServiceException("");
+            throw new ServiceException("Unexpected error while updating reservation.", e);
         }
     }
 
