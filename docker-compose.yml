@@ -18,6 +18,24 @@ services:
     networks:
       - hotel-ease
 
+  mysql8-reservation:
+    container_name: mysql8-reservation
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: ${RESERVATION_MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${RESERVATION_MYSQL_DATABASE}
+    volumes:
+      - reservation-data-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - hotel-ease
+
   room-app:
     container_name: room-app
     build:
@@ -33,10 +51,28 @@ services:
     networks:
       - hotel-ease
 
+  reservation-app:
+    container_name: reservation-app
+    build:
+      context: ./
+      dockerfile: ./Reservation/Dockerfile
+    ports:
+      - "8082:8082"
+    env_file: ./Reservation/.env
+    depends_on:
+      mysql8-reservation:
+        condition: service_healthy
+    restart: always
+    networks:
+      - hotel-ease
+
 volumes:
   data-mysql:
     name: data-mysql
+  reservation-data-mysql:
+    name: reservation-data-mysql
 
 networks:
   hotel-ease:
+    name: hotel-ease
     driver: bridge
